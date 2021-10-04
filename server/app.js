@@ -1,22 +1,37 @@
+const dotenv = require('dotenv');
+const mongoose = require('mongoose');
 const express = require('express');
 const app = express();
 
-app.get('/' , (req , res) => {
-res.send(`hello from server`);
+dotenv.config({path : './config.env'});
+
+require('./db/conn')
+const User = require('./model/userSchema')
+app.use(express.json());
+app.use(require('./router/auth'));
+const port = process.env.PORT;
+
+const middleWare = (req,res,next) => {
+    console.log(`this is middleware`);
+    next();
+};
+app.get('/about',middleWare, (req, res) => {
+    console.log("hello about")
+  res.send('Hello about page !')
 });
-app.get('/about' , (req , res) => {
-res.send(`hello AboutMe from server`);
+    app.get('/contact', (req, res) => {
+    res.send('Hello contact page !')
 });
-app.get('/contact' , (req , res) => {
-res.send(`hello contact from server`);
+    app.get('/login', (req, res) => {
+    res.send('Hello login page !')
 });
-app.get('/signIn' , (req , res) => {
-res.send(`hello login from server`);
+    app.get('/signin', (req, res) => { 
+    res.send('Hello register page !')
 });
-app.get('/signup' , (req , res) => {
-res.send(`hello registartion from server`);
+app.get('/', (req, res) => {
+  res.send('Hello Express from app.js!')
 });
 
-app.listen(3000 , () => {
-    console.log(`running on port number 3000`)
-})
+app.listen(port, () => {
+console.log(`server started on ${port}`);
+});
